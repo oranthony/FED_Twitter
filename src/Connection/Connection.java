@@ -12,9 +12,9 @@ import java.util.List;
  */
 public class Connection {
 
-    public static void CSVMaker(String date,String user, String msg) throws IOException {
+    public static void CSVMaker(FileWriter writer,String date,String user, String msg) throws IOException {
 
-        FileWriter writer = new FileWriter("./hashtag.csv");
+
         writer.append(date);
         writer.append(';');
         writer.append(user);
@@ -27,7 +27,7 @@ public class Connection {
 
         writer.append("\n");
         writer.flush();
-        writer.close();
+
 
     }
 
@@ -40,7 +40,7 @@ public class Connection {
 
         ArrayList<Status> tweets = new ArrayList<Status>();
         QueryResult result = null;
-
+        FileWriter writer = new FileWriter("hashtag.csv");
         while (tweets.size () < numberOfTweets) {
             if (numberOfTweets - tweets.size() > 100)
                 query.setCount(100);
@@ -68,7 +68,7 @@ public class Connection {
             String user = t.getUser().getScreenName();
             String msg = t.getText();
             Date time = t.getCreatedAt();
-            CSVMaker(time.toString(), user, msg);
+            CSVMaker(writer,time.toString(), user, msg);
         }
     }
 
