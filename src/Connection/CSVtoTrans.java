@@ -53,6 +53,7 @@ public class CSVtoTrans {
                         CreatedLine += ConversionTable.get(ss);
                         CreatedLine += " ";
                     }
+                    //once the String (corresponding to the line is done, add it to the trans file
                 }
             }
         } finally {
