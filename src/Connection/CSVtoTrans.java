@@ -27,7 +27,7 @@ public class CSVtoTrans {
         String CreatedLine = "";
         FileWriter writer = new FileWriter("quenelleTrans.trans");
 
-        FileOutputStream fileOut = new FileOutputStream("/Users/anthonyloroscio/FED_TEST2/saveHash.ser");
+        FileOutputStream fileOut = new FileOutputStream("saveHash.ser");
         ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
 
