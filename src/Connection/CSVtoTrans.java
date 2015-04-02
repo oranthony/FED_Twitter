@@ -2,6 +2,7 @@ package Connection;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +16,7 @@ import java.util.*;
  */
 public class CSVtoTrans {
 
-    final static String FILE_NAME = "/Users/anthonyloroscio/FED_TEST2/quenelle.csv";
+    final static String FILE_NAME = "/Users/anthonyloroscio/FED_TEST2/hashtag.csv";
     final static Charset ENCODING = StandardCharsets.UTF_8;
 
     void readLargerTextFile(String aFileName) throws IOException {
@@ -27,6 +28,7 @@ public class CSVtoTrans {
         Scanner scanner = new Scanner(path, ENCODING.name());
         HashMap ConversionTable = new HashMap();
         String CreatedLine = "";
+        FileWriter writer = new FileWriter("quenelleTrans.trans");
         //ConversionTable.put(0,"banane");
         try {
             while (scanner.hasNextLine()) {
@@ -44,17 +46,29 @@ public class CSVtoTrans {
                         //System.out.println("ici");
                         key = ConversionTable.get(ss);
                         System.out.println(key);
-                        CreatedLine += ConversionTable.get(ss);
-                        CreatedLine += " ";
+
+
                     }
                     else {
                         //System.out.println("la");
                         ConversionTable.put(ss,ConversionTable.size());
-                        CreatedLine += ConversionTable.get(ss);
-                        CreatedLine += " ";
+
+
                     }
+                    CreatedLine += ConversionTable.get(ss);
+                    CreatedLine += " ";
                     //once the String (corresponding to the line is done, add it to the trans file
+                    System.out.println(CreatedLine + "\n");
+                    //System.out.println("      ");
+
+
                 }
+                //writer.append("new line :");
+                writer.append(CreatedLine + System.getProperty("line.separator"));
+                //writer.append("\n");
+
+
+                CreatedLine="";
             }
         } finally {
             scanner.close();
@@ -63,6 +77,8 @@ public class CSVtoTrans {
                 System.out.println(e.nextElement());*/
             System.out.println(ConversionTable);
             System.out.println(CreatedLine);
+            writer.flush();
+            writer.close();
 
         }
 

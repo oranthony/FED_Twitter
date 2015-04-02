@@ -33,14 +33,14 @@ public class Connection {
 
     public static void main(String[] args) throws TwitterException, IOException {
         Twitter twitter = TwitterFactory.getSingleton();
-        Query query = new Query("#swag");
+        Query query = new Query("#quenelle");
 
-        int numberOfTweets = 200;
+        int numberOfTweets = 15000;
         long lastID = Long.MAX_VALUE;
 
         ArrayList<Status> tweets = new ArrayList<Status>();
         QueryResult result = null;
-        FileWriter writer = new FileWriter("hashtag.csv");
+        FileWriter writer = new FileWriter("quenelle.csv");
         while (tweets.size () < numberOfTweets) {
             if (numberOfTweets - tweets.size() > 100)
                 query.setCount(100);
