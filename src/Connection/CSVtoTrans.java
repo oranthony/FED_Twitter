@@ -1,9 +1,6 @@
 package Connection;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -29,6 +26,11 @@ public class CSVtoTrans {
         HashMap ConversionTable = new HashMap();
         String CreatedLine = "";
         FileWriter writer = new FileWriter("quenelleTrans.trans");
+
+        FileOutputStream fileOut = new FileOutputStream("/Users/anthonyloroscio/FED_TEST2/saveHash.ser");
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+
+
         //ConversionTable.put(0,"banane");
         try {
             while (scanner.hasNextLine()) {
@@ -79,6 +81,8 @@ public class CSVtoTrans {
             System.out.println(CreatedLine);
             writer.flush();
             writer.close();
+            out.writeObject(ConversionTable);
+            out.close();
 
         }
 
