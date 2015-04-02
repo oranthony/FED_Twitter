@@ -1,8 +1,7 @@
 package Connection;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 
 /**
@@ -15,11 +14,22 @@ public class TranstoCSV {
         ObjectInputStream ois = new ObjectInputStream(fis);
         HashMap hash =(HashMap) ois.readObject();
 
+        Set keys = hash.keySet();
+        Collection val = hash.values();
+
+        HashMap Rhash = new HashMap();
+
+        for(int i = 0;i<keys.size();++i){
+            Rhash.put(val.toArray()[i], keys.toArray()[i]);
+
+        }
 
         String Current;
         String[] tab;
         File file = new File("apriori.trans");
         Scanner scan = new Scanner(file);
+
+        FileWriter fw = new FileWriter("apriori.csv");
 
         while (scan.hasNextLine()){
             Current = scan.nextLine();
@@ -29,13 +39,17 @@ public class TranstoCSV {
             for(String i : tab){
                 if(!i.startsWith("(")){
                     //System.out.println(i);
-                    System.out.println(hash.containsValue(i.));
+                    System.out.println(Rhash.get(Integer.parseInt(i)));
+                    fw.append((String) Rhash.get(Integer.parseInt(i)));
+                    fw.append(';');
 
                 }
 
-
             }
+            fw.append(System.getProperty("line.separator"));
         }
+        fw.flush();
+        fw.close();
 
     }
 }
