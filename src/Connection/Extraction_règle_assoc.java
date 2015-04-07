@@ -2,6 +2,8 @@ package Connection;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +16,6 @@ import java.util.Scanner;
 public class Extraction_règle_assoc {
     final static String FILE_NAME = "./apriori.trans";
     final static Charset ENCODING = StandardCharsets.UTF_8;
-    int MIN_FREQ;
     int MIN_CONF;
 
     public int getFreq(String line){
@@ -22,11 +23,11 @@ public class Extraction_règle_assoc {
     }
 
     public String getContent(String line){
-
+        return line.substring(0, line.indexOf("(") - 1);
     }
 
-    public Extraction_règle_assoc(int MIN_FREQ, int MIN_CONF) throws FileNotFoundException {
-        this.MIN_FREQ = MIN_FREQ;
+    public Extraction_règle_assoc(int MIN_CONF) throws IOException {
+
         this.MIN_CONF = MIN_CONF;
 
         ArrayList<String> aTraiter = new ArrayList<String>();
@@ -34,29 +35,64 @@ public class Extraction_règle_assoc {
 
         File file = new File("apriori.trans");
         Scanner scan = new Scanner(file);
-        String line;
+
+        File assoc = new File("assoc.txt");
+        FileWriter associer = new FileWriter(assoc);
+        scan.nextLine();
         while(scan.hasNextLine()){
-            line = scan.nextLine();
-            int freq = getFreq(line);
-
-            if(freq >= MIN_FREQ){
-                aTraiter.add(line);
-            }
+            aTraiter.add(scan.nextLine());
         }
 
-        String split;
+        String content;
+        String parcours;
+        for(int i=1; i<aTraiter.size();++i){
 
-        for(int i=0; i<aTraiter.size();++i){
+            content = aTraiter.get(i);
 
+            for(int a=1; a<aTraiter.size();++a){
 
+                parcours = aTraiter.get(a);
 
-            for(int a=0; a<aTraiter.size();++a){
+                if(!getContent(content).equals(getContent(parcours))){
 
+                    String[] contain = getContent(content).split(" ");
 
+                    ArrayList<String> find = new ArrayList<String>();
+
+                    for(String str : getContent(content).split(" ")){
+                        find.add(str);
+                    }
+
+                    boolean good = true;
+
+                    for (int u = 0; u<contain.length;++u){
+                        if(!find.contains(contain[u])){
+                            good=false;
+                        }
+                    }
+
+                    if(good && getFreq(parcours)/getFreq(content) >= MIN_CONF){
+
+                        String ret = getContent(content);
+                        for (int u = 0; u<contain.length;++u){
+                            ret = ret.replace(contain[u],"");
+                        }
+
+                        associer.append(getContent(content) + " -> " + getContent(parcours).replace(getContent(content), ""));
+                        associer.append(System.getProperty("line.separator"));
+                    }
+                }
 
             }
 
         }
+        associer.flush();
+        associer.close();
+
+    }
+
+    public static void main(String[] args) throws IOException {
+        Extraction_règle_assoc ext = new Extraction_règle_assoc(200);
 
     }
 }
