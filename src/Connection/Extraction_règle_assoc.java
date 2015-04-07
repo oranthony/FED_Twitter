@@ -31,7 +31,7 @@ public class Extraction_règle_assoc {
         this.MIN_CONF = MIN_CONF;
 
         ArrayList<String> aTraiter = new ArrayList<String>();
-        ArrayList<String> traite = new ArrayList<String>();
+
 
         File file = new File("apriori.trans");
         Scanner scan = new Scanner(file);
@@ -43,49 +43,19 @@ public class Extraction_règle_assoc {
             aTraiter.add(scan.nextLine());
         }
 
-        String content;
-        String parcours;
-        for(int i=1; i<aTraiter.size();++i){
+        ArrayList<String> enCours = new ArrayList<String>();
+        ArrayList<String> check = new ArrayList<String>();
 
-            content = aTraiter.get(i);
-
-            for(int a=1; a<aTraiter.size();++a){
-
-                parcours = aTraiter.get(a);
-
-                if(!getContent(content).equals(getContent(parcours))){
-
-                    String[] contain = getContent(content).split(" ");
-
-                    ArrayList<String> find = new ArrayList<String>();
-
-                    for(String str : getContent(content).split(" ")){
-                        find.add(str);
-                    }
-
-                    boolean good = true;
-
-                    for (int u = 0; u<contain.length;++u){
-                        if(!find.contains(contain[u])){
-                            good=false;
-                        }
-                    }
-
-                    if(good && getFreq(parcours)/getFreq(content) >= MIN_CONF){
-
-                        String ret = getContent(content);
-                        for (int u = 0; u<contain.length;++u){
-                            ret = ret.replace(contain[u],"");
-                        }
-
-                        associer.append(getContent(content) + " -> " + getContent(parcours).replace(getContent(content), ""));
-                        associer.append(System.getProperty("line.separator"));
-                    }
-                }
-
+        for(String i : aTraiter){
+            for (String x : getContent(i).split(" ")){
+                enCours.add(x);
             }
 
+            for(String a : aTraiter){
+
+            }
         }
+
         associer.flush();
         associer.close();
 
