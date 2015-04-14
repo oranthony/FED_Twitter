@@ -35,7 +35,7 @@ public class Connection {
         Twitter twitter = TwitterFactory.getSingleton();
         Query query = new Query("#quenelle");
 
-        int numberOfTweets = 15000;
+        int numberOfTweets = 10000;
         long lastID = Long.MAX_VALUE;
 
         ArrayList<Status> tweets = new ArrayList<Status>();
