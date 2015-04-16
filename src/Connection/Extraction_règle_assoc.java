@@ -56,7 +56,7 @@ public class Extraction_règle_assoc {
         ArrayList<String> aTraiter = new ArrayList<String>();
         ArrayList<String> traite = new ArrayList<String>();
 
-        File file = new File("apriori.trans");
+        File file = new File("Quenelle1aprèsApriori.out");
         Scanner scan = new Scanner(file);
 
         File assoc = new File("assoc.txt");
@@ -80,27 +80,35 @@ public class Extraction_règle_assoc {
 
             String element = (String) object;
             for(int i = 0; i < set.size(); ++i){
-                if(isSubset((String) SetArray[i], element)){
+                //if(isSubset( (String) SetArray[i], element )){
+                String CurrentLine = (String) SetArray[i];
+                if (CurrentLine.contains(element) && CurrentLine != element){
                     //System.out.println(i);
                     /*
                     SetArray[i] est trouvé, calcul la freq
                      */
 
-                    String freqObjFound = FreqFinder.get(SetArray[i]).toString();
+
+
+                    String freqObjFound = FreqFinder.get(CurrentLine).toString();
                     String freqObjTested = FreqFinder.get(element).toString();
 
-                    String tmp = (String) SetArray[i];
+
+                    System.out.println(CurrentLine + "freq : " + freqObjFound);
+                    System.out.println("contient : " + element + "freq : " + freqObjTested);
 
 
                     int freqFound = Integer.parseInt(freqObjFound);
                     int freqTested = Integer.parseInt(freqObjTested);
 
-                    int result = freqFound/freqTested;
+                    int result = freqTested/freqFound;
 
                     //System.out.println(result);
-
+                    //associer.append("passe");
                     if(result > MIN_CONF){
-                        associer.append(element + " -> " + tmp.replace(element, "")); //Marche pas -> faut enlever element à tmp
+
+
+                        associer.append(element + " -> " + CurrentLine.replace(element, "")); //Marche pas -> faut enlever element à tmp
                         associer.append(System.getProperty("line.separator"));
                     }
                 }
@@ -108,71 +116,6 @@ public class Extraction_règle_assoc {
             //System.out.println(element);
             //if(isContain(KeySetString, element)) //System.out.println("trouvé");
         }
-
-        //if(isContain(KeySetString, "4")) ++cpttest;
-        //FreqFinder.keySet();
-
-        /*System.out.println("set");
-        System.out.println(set);
-        System.out.println(FreqFinder);
-        System.out.println("cpttest");
-        System.out.println(cpttest);*/
-
-        //ArrayList<Integer> CurrentValue = new ArrayList<Integer>();
-        /*int[] results = new int[aTraiter.size];
-
-
-        for(int i=1; i<aTraiter.size(); ++i) {
-            CurrentValue.add(aTraiter.get(i));
-        }*/
-
-        //TO DO : prendre un elem chercher tous les sur élements dans lequel il est inclus, calculer la confiance si sup à celle fixée par l'user alors ok
-        //Tricky point : parser chaque chiifre individuellement sinon fait une recherche groupée : trouve 1 dans 122 alors que pas censé.
-        /*String content ="";
-        String parcours;
-        ArrayList<String> find = new ArrayList<String>();
-        for(int i=1; i<aTraiter.size();++i) {
-
-            content = aTraiter.get(i);
-        }
-
-        System.out.println(isContain(content, "2"));*/
-            /*for(int a=1; a<aTraiter.size();++a){
-
-                parcours = aTraiter.get(a);
-
-                if(!getContent(content).equals(getContent(parcours))){
-
-                    String[] contain = getContent(content).split(" ");
-
-
-
-                    for(String str : getContent(content).split(" ")){
-                        find.add(str);
-                    }
-
-                    boolean good = true;
-
-                    for (int u = 0; u<contain.length;++u){
-                        //check if it's not part of a number
-                        if(!find.contains(" " + contain[u]) || !find.contains(contain[u]+ " ")){
-                            good=false;
-                        }
-                    }
-
-                   /* if(good && getFreq(parcours)/getFreq(content) >= MIN_CONF){
-
-                        String ret = getContent(content);
-                        for (int u = 0; u<contain.length;++u){
-                            ret = ret.replace(contain[u],"");
-                        }
-
-                        associer.append(getContent(content) + " -> " + getContent(parcours).replace(getContent(content), ""));
-                        associer.append(System.getProperty("line.separator"));
-                    }
-                }
-
-            }*/
 
 
         associer.flush();
@@ -183,7 +126,7 @@ public class Extraction_règle_assoc {
     }
 
     public static void main(String[] args) throws IOException {
-        Extraction_règle_assoc ext = new Extraction_règle_assoc(3500);
+        Extraction_règle_assoc ext = new Extraction_règle_assoc(70);
 
     }
 }
