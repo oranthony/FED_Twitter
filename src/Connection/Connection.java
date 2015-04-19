@@ -63,7 +63,7 @@ public class Connection {
 
         ArrayList<Status> tweets = new ArrayList<Status>();
         QueryResult result = null;
-        FileWriter writer = new FileWriter("Test4.csv");
+        FileWriter writer = new FileWriter("Run.csv");
         while (tweets.size () < numberOfTweets) {
             if (numberOfTweets - tweets.size() > 100)
                 query.setCount(100);

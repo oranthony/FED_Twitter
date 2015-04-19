@@ -13,7 +13,7 @@ import java.util.*;
  */
 public class CSVtoTrans {
 
-    final static String FILE_NAME = "/Users/anthonyloroscio/FED_TEST2/Test3.csv";
+    final static String FILE_NAME = "/Users/anthonyloroscio/FED_TEST2/Test4.csv";
     final static Charset ENCODING = StandardCharsets.UTF_8;
 
     void readLargerTextFile(String aFileName) throws IOException {
@@ -23,11 +23,11 @@ public class CSVtoTrans {
     public static void main(String[] args) throws IOException {
         Path path = Paths.get(FILE_NAME);
         Scanner scanner = new Scanner(path, ENCODING.name());
-        HashMap ConversionTable = new HashMap();
+        HashMap ConversionTable = new HashMap<String, String>();
         String CreatedLine = "";
-        FileWriter writer = new FileWriter("Test3.trans");
+        FileWriter writer = new FileWriter("Test4.trans");
 
-        FileOutputStream fileOut = new FileOutputStream("saveHash.ser");
+        FileOutputStream fileOut = new FileOutputStream("saveHash1.ser");
         ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
 
@@ -53,7 +53,7 @@ public class CSVtoTrans {
                     }
                     else {
                         //System.out.println("la");
-                        ConversionTable.put(ss,ConversionTable.size());
+                        ConversionTable.put(ss.toString(), ConversionTable.size());
 
 
                     }

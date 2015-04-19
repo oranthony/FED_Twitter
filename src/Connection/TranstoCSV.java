@@ -26,7 +26,7 @@ public class TranstoCSV {
 
         String Current;
         String[] tab;
-        File file = new File("assoc.txt");
+        File file = new File("assoc4sansLift.txt");
         Scanner scan = new Scanner(file);
 
         FileWriter fw = new FileWriter("AssocAprèsExctract.csv");
