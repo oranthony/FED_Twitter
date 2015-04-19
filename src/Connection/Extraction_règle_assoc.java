@@ -59,25 +59,30 @@ public class Extraction_règle_assoc {
         File assoc = new File("assoc.txt");
         FileWriter associer = new FileWriter(assoc);
         scan.nextLine();
+
+        //Stock les itemSet et leur fréquence dans un hasmap
         while(scan.hasNextLine()){
             //aTraiter.add(scan.nextLine());
             MotifTMP = scan.nextLine();
             //génère le Hashmap avec le motif en clé (String) et la fréq en value
             FreqFinder.put(getContent(MotifTMP), getFreq(MotifTMP));
-            //si la ligne en cours de lecture contient UNIQUEMENT 4 alors ++cpttest
-            //if(isContain(MotifTMP, "42")) ++cpttest; //a enlever check que la ligne courante
 
             //prend chaque clé dans le hashmap et prend le surensemble correspondant, puis calcule la fréquence
         }
+
+        //Stock toutes les clés (les motifs) dans un set pour y acceder rapidement
         Set<String> set = FreqFinder.keySet();
-        String KeySetString = set.toString();
         Object[] SetArray = set.toArray();
 
+        //Parcour chaque motif
         for(Object object : set) {
 
+            //Pour chaque motif cherche les sur-ensembles
+            //element correspond à x
             String element = (String) object;
             for(int i = 0; i < set.size(); ++i){
-                //if(isSubset( (String) SetArray[i], element )){
+
+                //CurrentLine correspond à Y
                 String CurrentLine = (String) SetArray[i];
                 if (CurrentLine.contains(element) && CurrentLine != element){
 
@@ -85,6 +90,7 @@ public class Extraction_règle_assoc {
                     System.out.println("currentline sur-ensemble " + CurrentLine);
 
 
+                    //récupère les fréquences dans la hashmap (mais en String)
                     String freqObjFound = FreqFinder.get(CurrentLine).toString();    //=Y, sur ensemble
                     String freqObjTested = FreqFinder.get(element).toString();       //=X,
 
@@ -92,7 +98,7 @@ public class Extraction_règle_assoc {
                     /*System.out.println(CurrentLine + "freq : " + freqObjFound);
                     System.out.println("contient : " + element + "freq : " + freqObjTested);*/
 
-
+                    //Cast les fréquences (String) en double
                     double freqFound = Integer.parseInt(freqObjFound);
                     double freqTested = Integer.parseInt(freqObjTested);
 
@@ -100,35 +106,42 @@ public class Extraction_règle_assoc {
                     System.out.println(freqTested);
                     System.out.println("separator");*/
 
+                    //Calcul de la confiance
                     double Confiance = freqFound/freqTested;
 
-                    //System.out.println(result);
-                    //associer.append("passe");
 
                     //Check Confiance
                     if(Confiance > MIN_CONF){
 
                         //Do The Lift
 
-                        //Find in hashmap te freq of F(X->Y/X) // la freq de y sans x
+
+
+                        //Construction de la String Y privé de X
                         String SansX = CurrentLine.replace(" "+element, "");
 
                         //System.out.println("Current line" + CurrentLine);
                         //System.out.println("element" + element);
                         //System.out.println("sansx " + SansX);
                         //System.out.println(KeySetString);
+
+                        //Find in hashmap the freq of F(X->Y/X) // la freq de y sans x
                         if (FreqFinder.containsKey(SansX)) {
-                            //System.out.println("ici");
+
+                            //récupère la fréquence puis la cast en double
                             String freqSansX = FreqFinder.get(SansX).toString();
                             double DoublefreqSansX = Integer.parseInt(freqSansX);
+
                             //System.out.println("DoublefreqSansX " + DoublefreqSansX);
                             System.out.println("Y Sans X " + SansX + "     freq " + DoublefreqSansX);
                             System.out.println("Confiance " + Confiance);
 
-                            //Lift
+                            // Calcul le Lift
                             double Lift = Confiance/DoublefreqSansX;
                             //System.out.println("result :" + Confiance);
                             //System.out.println("Lift :" + Lift);
+
+                            //Si le lift est supérieur à 1 alors génère les règles correspondantes
                             if (Lift > 1) {
                                 //System.out.println("cc");
                                 associer.append(element + " -> " + CurrentLine.replace(element, "")); //Marche pas -> faut enlever element à tmp
@@ -154,6 +167,8 @@ public class Extraction_règle_assoc {
 
 
     public static void main(String[] args) throws IOException {
+
+        //j'ai mis 0.75 en confiance minimale car dans les tp de Lotfi on mettais toujours des valeurs de cet ordre là
         Extraction_règle_assoc ext = new Extraction_règle_assoc(0.75);
 
     }
