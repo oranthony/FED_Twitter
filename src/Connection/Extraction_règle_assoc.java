@@ -20,7 +20,7 @@ public class Extraction_règle_assoc {
     String MotifTMP;
     int cpttest;
     HashMap FreqFinder = new HashMap();
-    int MIN_CONF;
+    double MIN_CONF;
 
     public int getFreq(String line){
         return Integer.parseInt(line.substring(line.indexOf("(") + 1, line.indexOf(")")));
@@ -41,12 +41,9 @@ public class Extraction_règle_assoc {
         return B.contains(A);
     }
 
-    String One = "2 4";
-    String Two = "2";
 
 
-
-    public Extraction_règle_assoc(int MIN_CONF) throws IOException {
+    public Extraction_règle_assoc(double MIN_CONF) throws IOException {
 
         /*System.out.println("Is two a subset of one? ");
         System.out.println(isSubset(Two, One));*/
@@ -83,37 +80,65 @@ public class Extraction_règle_assoc {
                 //if(isSubset( (String) SetArray[i], element )){
                 String CurrentLine = (String) SetArray[i];
                 if (CurrentLine.contains(element) && CurrentLine != element){
-                    //System.out.println(i);
-                    /*
-                    SetArray[i] est trouvé, calcul la freq
-                     */
+
+                    System.out.println("element sous ensemble " + element);
+                    System.out.println("currentline sur-ensemble " + CurrentLine);
 
 
-
-                    String freqObjFound = FreqFinder.get(CurrentLine).toString();
-                    String freqObjTested = FreqFinder.get(element).toString();
-
-
-                    System.out.println(CurrentLine + "freq : " + freqObjFound);
-                    System.out.println("contient : " + element + "freq : " + freqObjTested);
+                    String freqObjFound = FreqFinder.get(CurrentLine).toString();    //=Y, sur ensemble
+                    String freqObjTested = FreqFinder.get(element).toString();       //=X,
 
 
-                    int freqFound = Integer.parseInt(freqObjFound);
-                    int freqTested = Integer.parseInt(freqObjTested);
+                    /*System.out.println(CurrentLine + "freq : " + freqObjFound);
+                    System.out.println("contient : " + element + "freq : " + freqObjTested);*/
 
-                    int result = freqTested/freqFound;
+
+                    double freqFound = Integer.parseInt(freqObjFound);
+                    double freqTested = Integer.parseInt(freqObjTested);
+
+                    /*System.out.println(freqFound);
+                    System.out.println(freqTested);
+                    System.out.println("separator");*/
+
+                    double Confiance = freqFound/freqTested;
 
                     //System.out.println(result);
                     //associer.append("passe");
-                    if(result > MIN_CONF){
 
+                    //Check Confiance
+                    if(Confiance > MIN_CONF){
 
-                        associer.append(element + " -> " + CurrentLine.replace(element, "")); //Marche pas -> faut enlever element à tmp
-                        associer.append(System.getProperty("line.separator"));
+                        //Do The Lift
+
+                        //Find in hashmap te freq of F(X->Y/X) // la freq de y sans x
+                        String SansX = CurrentLine.replace(" "+element, "");
+
+                        //System.out.println("Current line" + CurrentLine);
+                        //System.out.println("element" + element);
+                        //System.out.println("sansx " + SansX);
+                        //System.out.println(KeySetString);
+                        if (FreqFinder.containsKey(SansX)) {
+                            //System.out.println("ici");
+                            String freqSansX = FreqFinder.get(SansX).toString();
+                            double DoublefreqSansX = Integer.parseInt(freqSansX);
+                            //System.out.println("DoublefreqSansX " + DoublefreqSansX);
+                            System.out.println("Y Sans X " + SansX + "     freq " + DoublefreqSansX);
+                            System.out.println("Confiance " + Confiance);
+
+                            //Lift
+                            double Lift = Confiance/DoublefreqSansX;
+                            //System.out.println("result :" + Confiance);
+                            //System.out.println("Lift :" + Lift);
+                            if (Lift > 1) {
+                                //System.out.println("cc");
+                                associer.append(element + " -> " + CurrentLine.replace(element, "")); //Marche pas -> faut enlever element à tmp
+                                associer.append(System.getProperty("line.separator"));
+                            }
+                        }
                     }
                 }
             }
-            //System.out.println(element);
+
             //if(isContain(KeySetString, element)) //System.out.println("trouvé");
         }
 
@@ -121,12 +146,15 @@ public class Extraction_règle_assoc {
         associer.flush();
         associer.close();
         //System.out.println(aTraiter);
-        //System.out.println(find);
+        //System.out.println(FreqFinder);
+        //System.out.println(KeySetString);
 
     }
 
+
+
     public static void main(String[] args) throws IOException {
-        Extraction_règle_assoc ext = new Extraction_règle_assoc(70);
+        Extraction_règle_assoc ext = new Extraction_règle_assoc(0.75);
 
     }
 }
