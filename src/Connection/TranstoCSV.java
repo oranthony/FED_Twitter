@@ -26,10 +26,10 @@ public class TranstoCSV {
 
         String Current;
         String[] tab;
-        File file = new File("Quenelle1aprèsApriori.out");
+        File file = new File("assoc.txt");
         Scanner scan = new Scanner(file);
 
-        FileWriter fw = new FileWriter("Quenelle1aprèsAprioriEnCSV.csv");
+        FileWriter fw = new FileWriter("AssocAprèsExctract.csv");
 
         while (scan.hasNextLine()){
             Current = scan.nextLine();

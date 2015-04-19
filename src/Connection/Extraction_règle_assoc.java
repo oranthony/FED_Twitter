@@ -1,10 +1,6 @@
 package Connection;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Array;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -15,7 +11,7 @@ import java.util.regex.Pattern;
  * Created by anthonyloroscio on 07/04/15.
  */
 public class Extraction_règle_assoc {
-    final static String FILE_NAME = "/Users/anthonyloroscio/FED_TEST2/apriori.trans";
+    //final static String FILE_NAME = "/Users/anthonyloroscio/FED_TEST2/Test2Extract.out";
     final static Charset ENCODING = StandardCharsets.UTF_8;
     String MotifTMP;
     int cpttest;
@@ -42,6 +38,48 @@ public class Extraction_règle_assoc {
     }
 
 
+    public void AssociationsRulesToWords() throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream("saveHash.ser");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        HashMap hash =(HashMap) ois.readObject();
+
+        Set keys = hash.keySet();
+        Collection val = hash.values();
+
+        HashMap Rhash = new HashMap();
+
+        for(int i = 0;i<keys.size();++i){
+            Rhash.put(val.toArray()[i], keys.toArray()[i]);
+
+        }
+
+        String Current;
+        String[] tab;
+        File file = new File("assoc.txt");
+        Scanner scan = new Scanner(file);
+
+        FileWriter fw = new FileWriter("AssocAprèsExctractWithWords.txt");
+
+        while (scan.hasNextLine()){
+            Current = scan.nextLine();
+
+            tab = Current.split(" -> ");
+
+            for(int i = 0; i < tab.length; i += i + 2){
+
+                    System.out.println(Rhash.get(tab[i]));
+                    fw.append((String) Rhash.get(tab[i]));
+                    fw.append(';');
+
+            }
+            fw.append(System.getProperty("line.separator"));
+        }
+        fw.flush();
+        fw.close();
+
+
+    }
+
 
     public Extraction_règle_assoc(double MIN_CONF) throws IOException {
 
@@ -50,15 +88,16 @@ public class Extraction_règle_assoc {
 
         this.MIN_CONF = MIN_CONF;
 
-        ArrayList<String> aTraiter = new ArrayList<String>();
-        ArrayList<String> traite = new ArrayList<String>();
+        ArrayList<String> MotsInutiles = new ArrayList<String>();
 
-        File file = new File("Quenelle1aprèsApriori.out");
+        File file = new File("Test2.out");
         Scanner scan = new Scanner(file);
 
         File assoc = new File("assoc.txt");
         FileWriter associer = new FileWriter(assoc);
         scan.nextLine();
+
+
 
         //Stock les itemSet et leur fréquence dans un hasmap
         while(scan.hasNextLine()){
@@ -70,9 +109,22 @@ public class Extraction_règle_assoc {
             //prend chaque clé dans le hashmap et prend le surensemble correspondant, puis calcule la fréquence
         }
 
+        File fileCleaner = new File("motsinutiles.txt");
+        Scanner scanInutile = new Scanner(file);
+        String élementActuel;
+
+        while(scanInutile.hasNextLine()){
+
+            élementActuel = scanInutile.nextLine();
+            MotsInutiles.add(élementActuel);
+
+        }
+
+
         //Stock toutes les clés (les motifs) dans un set pour y acceder rapidement
         Set<String> set = FreqFinder.keySet();
         Object[] SetArray = set.toArray();
+        boolean isUseless=false;
 
         //Parcour chaque motif
         for(Object object : set) {
@@ -84,10 +136,13 @@ public class Extraction_règle_assoc {
 
                 //CurrentLine correspond à Y
                 String CurrentLine = (String) SetArray[i];
-                if (CurrentLine.contains(element) && CurrentLine != element){
+                if(MotsInutiles.contains(element)){
+                    isUseless = true;
+                }
+                else if (CurrentLine.contains(element) && CurrentLine != element && isUseless == false){
 
-                    System.out.println("element sous ensemble " + element);
-                    System.out.println("currentline sur-ensemble " + CurrentLine);
+                    /*System.out.println("element sous ensemble " + element);
+                    System.out.println("currentline sur-ensemble " + CurrentLine);*/
 
 
                     //récupère les fréquences dans la hashmap (mais en String)
@@ -133,18 +188,29 @@ public class Extraction_règle_assoc {
                             double DoublefreqSansX = Integer.parseInt(freqSansX);
 
                             //System.out.println("DoublefreqSansX " + DoublefreqSansX);
-                            System.out.println("Y Sans X " + SansX + "     freq " + DoublefreqSansX);
-                            System.out.println("Confiance " + Confiance);
+                            /*System.out.println("Y Sans X " + SansX + "     freq " + DoublefreqSansX);
+                            System.out.println("Confiance " + Confiance);*/
 
                             // Calcul le Lift
                             double Lift = Confiance/DoublefreqSansX;
                             //System.out.println("result :" + Confiance);
-                            //System.out.println("Lift :" + Lift);
+                            System.out.println("Lift :" + Lift);
 
                             //Si le lift est supérieur à 1 alors génère les règles correspondantes
                             if (Lift > 1) {
                                 //System.out.println("cc");
-                                associer.append(element + " -> " + CurrentLine.replace(element, "")); //Marche pas -> faut enlever element à tmp
+
+
+                                /*
+                                CLEAN WITH MOTSINUTILES.TXT
+                                 */
+
+
+
+
+
+
+                                associer.append(element + " -> " + CurrentLine.replace(element, ""));
                                 associer.append(System.getProperty("line.separator"));
                             }
                         }
@@ -166,10 +232,11 @@ public class Extraction_règle_assoc {
 
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
 
         //j'ai mis 0.75 en confiance minimale car dans les tp de Lotfi on mettais toujours des valeurs de cet ordre là
         Extraction_règle_assoc ext = new Extraction_règle_assoc(0.75);
+        ext.AssociationsRulesToWords();
 
     }
 }

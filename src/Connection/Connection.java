@@ -56,14 +56,14 @@ public class Connection {
 
 
         Twitter twitter = TwitterFactory.getSingleton();
-        Query query = new Query("#jesuischarlie");
+        Query query = new Query("#PSG");
 
-        int numberOfTweets = 10000;
+        int numberOfTweets = 5000;
         long lastID = Long.MAX_VALUE;
 
         ArrayList<Status> tweets = new ArrayList<Status>();
         QueryResult result = null;
-        FileWriter writer = new FileWriter("Test2.csv");
+        FileWriter writer = new FileWriter("Test4.csv");
         while (tweets.size () < numberOfTweets) {
             if (numberOfTweets - tweets.size() > 100)
                 query.setCount(100);
